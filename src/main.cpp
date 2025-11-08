@@ -2,14 +2,20 @@
 #include <cmath>
 
 void draw(sf::RenderWindow &window, const sf::Time delta_time,
-          const sf::Vector2f direction) {
+          const sf::Vector2f direction, const bool jump_requested) {
   const auto dt_seconds = delta_time.asSeconds();
 
   static sf::CircleShape circle(40);
 
-  static float y_velocity = 0.f;
+  static float y_velocity{0.f};
+  static bool in_air{true};
 
-  y_velocity = std::min(y_velocity + dt_seconds * 840.f, 600.f);
+  if (jump_requested && !in_air) {
+    in_air = true;
+    y_velocity = -1000;
+  }
+
+  y_velocity = std::min(y_velocity + dt_seconds * 1540.f, 1740.f);
 
   float y_distance = y_velocity * dt_seconds;
   float x_distance = direction.x * dt_seconds * 500;
@@ -34,6 +40,7 @@ void draw(sf::RenderWindow &window, const sf::Time delta_time,
     next_position.y =
         static_cast<float>(window.getSize().y) - circle.getRadius() * 2;
     y_velocity = 0;
+    in_air = false;
   }
 
   circle.setFillColor(sf::Color::Blue);
@@ -65,20 +72,17 @@ int main() {
       direction.x += 1;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-      // Do something else
-    }
+    const auto jump_requested = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 
-    auto magnitude = std::sqrt(static_cast<float>(direction.x * direction.x +
-                                                  direction.y * direction.y));
-
+    const auto magnitude = std::sqrt(static_cast<float>(
+        direction.x * direction.x + direction.y * direction.y));
     if (magnitude != 0) {
       direction.x /= magnitude;
       direction.y /= magnitude;
     }
 
     window.clear();
-    draw(window, clock.restart(), direction);
+    draw(window, clock.restart(), direction, jump_requested);
     window.display();
   }
 
