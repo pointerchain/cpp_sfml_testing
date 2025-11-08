@@ -1,3 +1,17 @@
-# C++ SFML Testing
+# 2D Platformer
 
-> A project for messing around with SFML, kind of turned into a 2D platformer project. (Probably going to make this it's own project)
+> A simple 2D Platformer using SFML and C++.
+
+## Requirements
+
+- CMake (Version 3.10+)
+- Ninja
+- Clang (C++23)
+- SFML libraries (graphics, window, system)
+
+## Build
+
+```bash
+cmake --preset default
+cmake --build --preset default
+build/2d_platformer
